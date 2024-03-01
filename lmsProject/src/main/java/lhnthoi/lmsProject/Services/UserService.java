@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+
 public class UserService implements IUserService{
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
@@ -67,5 +68,13 @@ public class UserService implements IUserService{
         return userRepository.findByUserId(userId)
                 .orElseThrow(()-> new DataNotFoundException("Cannot find user with id: " + userId));
     }
+
+    @Override
+    public void deleteUser(int userId) throws DataNotFoundException {
+        User existingUser = userRepository.findByUserId(userId)
+                .orElseThrow(()-> new DataNotFoundException("Cannot find user with username: " + userId));
+        userRepository.delete(existingUser);
+    }
+
 
 }

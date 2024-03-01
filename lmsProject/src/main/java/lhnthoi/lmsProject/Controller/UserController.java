@@ -4,6 +4,7 @@ import lhnthoi.lmsProject.DTOs.UserDTO;
 import lhnthoi.lmsProject.DTOs.UserLoginDTO;
 import lhnthoi.lmsProject.Enums.FileUploadDestination;
 import lhnthoi.lmsProject.Components.FileFunction;
+import lhnthoi.lmsProject.Exceptions.DataNotFoundException;
 import lhnthoi.lmsProject.Models.User;
 import lhnthoi.lmsProject.Services.UserService;
 import jakarta.validation.Valid;
@@ -84,6 +85,24 @@ public class UserController {
             existingUser.setAvatarUrl(fileUrl);
             userService.editProfile(existingUser);
             return ResponseEntity.ok("Avatar has been saved");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUser(@PathVariable("id") int userId) {
+        try {
+            User existingUser = userService.getUserById(userId);
+            return ResponseEntity.ok(existingUser);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") int userId) {
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok("User with id: " +userId + "has been deleted");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

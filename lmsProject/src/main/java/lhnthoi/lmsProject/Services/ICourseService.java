@@ -7,4 +7,6 @@ import lhnthoi.lmsProject.Models.Course;
 public interface ICourseService {
     Course createCourse(CourseDTO courseDTO) throws DataNotFoundException;
     Course getCourseById(String courseId) throws DataNotFoundException;
+    Course editCourse(Course course) throws DataNotFoundException;
+    void deleteCourse(String courseId) throws DataNotFoundException;
 }

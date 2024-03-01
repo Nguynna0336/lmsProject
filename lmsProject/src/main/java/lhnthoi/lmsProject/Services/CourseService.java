@@ -31,15 +31,35 @@ public class CourseService implements ICourseService {
                 .lecturer(lecturer)
                 .maxQuantity(courseDTO.getMaxQuantity())
                 .startDate(courseDTO.getStartDate())
+                .currentQuantity(0)
                 .build();
 
         return courseRepository.save(course);
     }
-
     @Override
     public Course getCourseById(String courseId) throws DataNotFoundException {
         return courseRepository.findByCourseId(courseId).orElseThrow(()-> new DataNotFoundException("Cannot find course with id: " + courseId));
     }
+    @Override
+    public Course editCourse(Course course) throws DataNotFoundException {
+        Course existingCourse = courseRepository.findByCourseId(course.getCourseId())
+                .orElseThrow(()->new DataNotFoundException("Cannot find course with id: " + course.getCourseId()));
+        existingCourse.setCourseName(course.getCourseName());
+        existingCourse.setDay(course.getDay());
+        existingCourse.setDuration(course.getDuration());
+        existingCourse.setLecturer(course.getLecturer());
+        existingCourse.setStartDate(course.getStartDate());
+        existingCourse.setEndDate(course.getEndDate());
+        existingCourse.setMaxQuantity(course.getMaxQuantity());
+        existingCourse.setDepartmentId(course.getDepartmentId());
+        return courseRepository.save(existingCourse);
+    }
 
+    @Override
+    public void deleteCourse(String courseId) throws DataNotFoundException {
+        Course existingCourse = courseRepository.findByCourseId(courseId)
+                .orElseThrow(()->new DataNotFoundException("Cannot find course with id: " + courseId));
+        courseRepository.delete(existingCourse);
+    }
 
 }

@@ -9,4 +9,5 @@ public interface IUserService {
     String login(String userName, String password) throws Exception;
     User editProfile(User user) throws DataNotFoundException;
     User getUserById(int userId) throws DataNotFoundException;
+    void deleteUser(int userId) throws DataNotFoundException;
 }
