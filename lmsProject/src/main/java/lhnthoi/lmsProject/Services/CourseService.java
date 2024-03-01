@@ -16,7 +16,7 @@ public class CourseService implements ICourseService {
     private final UserRepository userRepository;
     @Override
     public Course createCourse(CourseDTO courseDTO) throws DataNotFoundException {
-        if(courseRepository.existByCourseId(courseDTO.getCourseId())){
+        if(courseRepository.existsByCourseId(courseDTO.getCourseId())){
             throw new DataIntegrityViolationException("Course has been created before");
         }
         User lecturer = userRepository.findByUserId(courseDTO.getLecturerId())

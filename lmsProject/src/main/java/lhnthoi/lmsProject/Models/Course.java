@@ -19,7 +19,8 @@ public class Course {
     @Column(name = "course_id")
     private String courseId;
 
-    @JoinColumn(name = "lecture_id",referencedColumnName = "user_id")
+    @ManyToOne
+    @JoinColumn(name = "lecturer_id",referencedColumnName = "user_id")
     private User lecturer;
 
     @Column(name = "course_name")
@@ -42,7 +43,7 @@ public class Course {
     private Week day;
 
     @Column(name = "duration")
-    private List<Integer> duration; // tiết 1-5 là 1,2,3,4,5
+    private float duration;
 
     @Column(name = "current_quantity")
     private int currentQuantity;

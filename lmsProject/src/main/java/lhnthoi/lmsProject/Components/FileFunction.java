@@ -1,6 +1,7 @@
-package lhnthoi.lmsProject.Function;
+package lhnthoi.lmsProject.Components;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Component
 public class FileFunction {
 
     public String checkRequire(List<MultipartFile> files, List<String> requiredType, Long maxSizeEachFile, int maxSize) {
@@ -31,14 +33,19 @@ public class FileFunction {
     }
     public String storeFile(MultipartFile file, String purpose) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        String uniqueFileName = UUID.randomUUID() + "_" + fileName;
-        Path uploadDir = Paths.get(purpose);
+        Path uploadDir = Paths.get("resource",purpose);
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
         }
-        Path destination = Paths.get(uploadDir.toString(), uniqueFileName);
+        Path destination = Paths.get(uploadDir.toString(), fileName);
         Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         return destination.toString();
+    }
+    public void deleteFile(String url) throws Exception {
+        Path fileUrl = Paths.get(url);
+        if(!Files.deleteIfExists(fileUrl)) {
+            throw new Exception("File doesn't exist or can not be remove");
+        }
     }
     private boolean checkType(MultipartFile file, List<String> required) {
         String fileName = file.getName();

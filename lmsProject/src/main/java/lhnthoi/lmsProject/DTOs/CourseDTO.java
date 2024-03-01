@@ -29,5 +29,5 @@ public class CourseDTO {
     @JsonProperty("end_date")
     private Date endDate;
     private Week day; // ngày học trong tuần :D
-    private List<Integer> duration; // tiết 1-5 là 1,2,3,4,5
+    private float duration;
 }

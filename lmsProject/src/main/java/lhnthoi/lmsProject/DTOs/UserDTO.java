@@ -17,7 +17,6 @@ public class UserDTO {
     @JsonProperty("fullname")
     private String fullName;
     @JsonProperty("phone_number")
-    @NotBlank(message = "Phone number is required")
     private String phoneNumber;
     @NotBlank(message = "Email is required")
     private String email;

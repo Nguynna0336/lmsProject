@@ -14,12 +14,13 @@ public class CourseDetail {
     @Id
     @Column(name = "course_detail_id")
     private Long id;
+
     @ManyToOne
-    @JoinColumn(name = "courseId")
+    @JoinColumn(name = "course_id")
     private Course course;
 
     @ManyToOne
-    @JoinColumn(name = "lecture_id",referencedColumnName = "user_id")
+    @JoinColumn(name = "lecturer_id",referencedColumnName = "user_id")
     private User lecturer;
 
     @ManyToOne

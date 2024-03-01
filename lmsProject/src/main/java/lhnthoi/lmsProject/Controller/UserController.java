@@ -3,7 +3,7 @@ package lhnthoi.lmsProject.Controller;
 import lhnthoi.lmsProject.DTOs.UserDTO;
 import lhnthoi.lmsProject.DTOs.UserLoginDTO;
 import lhnthoi.lmsProject.Enums.FileUploadDestination;
-import lhnthoi.lmsProject.Function.FileFunction;
+import lhnthoi.lmsProject.Components.FileFunction;
 import lhnthoi.lmsProject.Models.User;
 import lhnthoi.lmsProject.Services.UserService;
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final FileFunction fileFunction;
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO, BindingResult result) {
         try {
             if(result.hasErrors()) {
@@ -55,6 +55,7 @@ public class UserController {
     public ResponseEntity<?> editProfile(@Valid @RequestBody UserDTO userDTO) {
         try {
             User editedUser = User.builder()
+                    .userName(userDTO.getUserName())
                     .fullName(userDTO.getFullName())
                     .dateOfBirth(userDTO.getDateOfBirth())
                     .phoneNumber(userDTO.getPhoneNumber())
@@ -76,8 +77,11 @@ public class UserController {
             if(!check.equals("accepted")) {
                 return ResponseEntity.badRequest().body(check);
             }
-            String fileName = fileFunction.storeFile(file, String.valueOf(FileUploadDestination.AVATAR));
-            existingUser.setAvatarUrl(fileName);
+            String fileUrl = fileFunction.storeFile(file, String.valueOf(FileUploadDestination.AVATAR));
+            if(!existingUser.getAvatarUrl().isEmpty()){
+                fileFunction.deleteFile(existingUser.getAvatarUrl());
+            }
+            existingUser.setAvatarUrl(fileUrl);
             userService.editProfile(existingUser);
             return ResponseEntity.ok("Avatar has been saved");
         } catch (Exception e) {

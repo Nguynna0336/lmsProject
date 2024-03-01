@@ -2,7 +2,7 @@ package lhnthoi.lmsProject.Controller;
 
 import lhnthoi.lmsProject.DTOs.AssignmentDTO;
 import lhnthoi.lmsProject.Enums.FileUploadDestination;
-import lhnthoi.lmsProject.Function.FileFunction;
+import lhnthoi.lmsProject.Components.FileFunction;
 import lhnthoi.lmsProject.Models.Assignment;
 import lhnthoi.lmsProject.Models.Course;
 import lhnthoi.lmsProject.Services.AssignmentService;

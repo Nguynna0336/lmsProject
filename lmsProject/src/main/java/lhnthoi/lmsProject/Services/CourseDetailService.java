@@ -46,17 +46,16 @@ public class CourseDetailService implements ICourseDetailService {
 
     @Override
     public String editGrade(HashMap<Integer, Float> gradeBook, String courseId) throws DataNotFoundException {
-        if(!courseRepository.existByCourseId(courseId)) {
+        if(!courseRepository.existsByCourseId(courseId)) {
             throw new DataNotFoundException("Cannot find course with id: "+ courseId);
         }
+        Course existingCourse = courseRepository.findByCourseId(courseId)
+                .orElseThrow(()-> new DataNotFoundException("Cannot find course with id: "+ courseId));
         for (Map.Entry<Integer, Float> pair : gradeBook.entrySet()) {
             int studentId = pair.getKey();
             Float grade = pair.getValue();
-            if(!userRepository.existById(studentId))
-            {
-                throw new DataNotFoundException("Cannot find student with id: "+ studentId);
-            }
-            CourseDetail existingCourseDetail = courseDetailRepository.findByCourseIdAndStudentId(courseId,studentId)
+            User existingStudent = userRepository.findByUserId(studentId).orElseThrow(()-> new DataNotFoundException("Cannot find student with id: "+ studentId));
+            CourseDetail existingCourseDetail = courseDetailRepository.findByCourseAndStudent(existingCourse,existingStudent)
                     .orElseThrow(()-> new DataNotFoundException("Cannot find student with id:" + studentId +" in course: " + courseId));
             existingCourseDetail.setGrade(grade);
         }
@@ -65,10 +64,9 @@ public class CourseDetailService implements ICourseDetailService {
 
     @Override
     public List<CourseDetailResponse> getGradeBookByCourseId(String courseId, int lectureId) throws DataNotFoundException {
-        if(!courseRepository.existByCourseId(courseId)) {
-            throw new DataNotFoundException("Course with id: "+ courseId +" does not exist");
-        }
-        List<CourseDetail> courseDetailList = courseDetailRepository.findByCourseIdAndLectureId(courseId, lectureId );
+        Course existintCourse = courseRepository.findByCourseId(courseId).orElseThrow(()-> new DataNotFoundException("Can not find course with id: "+ courseId));
+        User lecturer = userRepository.findByUserId(lectureId).orElseThrow(()-> new DataNotFoundException("Can not find lecturer with id: "+ lectureId));
+        List<CourseDetail> courseDetailList = courseDetailRepository.findByCourseAndLecturer(existintCourse, lecturer );
         List<CourseDetailResponse> gradeBook = new ArrayList<>();
         for(CourseDetail courseDetail : courseDetailList) {
             CourseDetailResponse courseDetailResponse = CourseDetailResponse.fromCourseDetail(courseDetail);
@@ -79,10 +77,12 @@ public class CourseDetailService implements ICourseDetailService {
 
     @Override
     public String deleteCourseDetail(int studentId, String courseId) throws Exception {
-        CourseDetail courseDetail = courseDetailRepository.findByCourseIdAndStudentId(courseId,studentId)
-                .orElseThrow(()-> new DataNotFoundException("Student with id " + studentId + " hasn't enroll course " + courseId));
         Course existingCourse = courseRepository.findByCourseId(courseId)
                 .orElseThrow(()-> new DataNotFoundException("Cannot find course with id: " + courseId));
+        User existingStudent = userRepository.findByUserId(studentId)
+                .orElseThrow(()-> new DataNotFoundException("Cannot find student with id: "+ studentId));
+        CourseDetail courseDetail = courseDetailRepository.findByCourseAndStudent(existingCourse,existingStudent)
+                .orElseThrow(()-> new DataNotFoundException("Student with id " + studentId + " hasn't enroll course " + courseId));
         if(existingCourse.getStartDate().before(new Date()) || existingCourse.getEndDate().after(new Date()))
         {
             throw new Exception("Cannot delete course's detail now, please wait to the end of semester");

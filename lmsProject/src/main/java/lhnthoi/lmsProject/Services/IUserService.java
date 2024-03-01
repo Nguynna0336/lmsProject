@@ -6,7 +6,7 @@ import lhnthoi.lmsProject.Models.User;
 
 public interface IUserService {
     User createUser(UserDTO userDTO) throws Exception;
-    String login(String userName, String password) throws DataNotFoundException;
+    String login(String userName, String password) throws Exception;
     User editProfile(User user) throws DataNotFoundException;
-    User getUserById(int userId) throws Exception;
+    User getUserById(int userId) throws DataNotFoundException;
 }

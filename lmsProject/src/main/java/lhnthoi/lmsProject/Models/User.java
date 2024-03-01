@@ -19,13 +19,13 @@ public class User {
     @Column(name = "user_id")
     private int userId;
 
-    @Column(name = "username", length = 30)
+    @Column(name = "username", length = 30, unique = true)
     private String userName;
 
     @Column(name = "fullname", length = 100)
     private String fullName;
 
-    @Column(name = "phone_number", length = 20, nullable = false)
+    @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
     @Column(name = "email", length = 200)
